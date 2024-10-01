@@ -2,7 +2,9 @@ package main
 
 import (
     "fmt"
+    "html/template"
     "net/http"
+    "path/filepath"
 )
 
 func main() {
@@ -14,11 +16,26 @@ func main() {
 }
 
 func runRootHandler(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "text/html")
-    fmt.Fprintln(w, "<h1>Home</h1><p>Welcome to the home page!</p>")
+    renderTemplate(w, "home.html", nil)
 }
 
 func runAddHandler(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "text/html")
-    fmt.Fprintln(w, "<h1>Add</h1><p>This is the add page!</p>")
+    renderTemplate(w, "add.html", nil)
+}
+
+func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
+    templatesDir := "templates"
+    files := []string{
+        filepath.Join(templatesDir, tmpl),
+        filepath.Join(templatesDir, "layout.html"),
+    }
+    templateServe, err := template.ParseFiles(files...)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    err = templateServe.ExecuteTemplate(w, "layout", data)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+    }
 }
