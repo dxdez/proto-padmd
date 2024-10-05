@@ -11,8 +11,8 @@ func main() {
     http.HandleFunc("/", runRootHandler)
     http.HandleFunc("/add", runAddHandler)
 
-    fmt.Println("Server starting on PORT 8000")
-    http.ListenAndServe(":8000", nil)
+    fmt.Println("Server starting on PORT 8080")
+    http.ListenAndServe(":8080", nil)
 }
 
 func runRootHandler(w http.ResponseWriter, r *http.Request) {

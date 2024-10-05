@@ -1,0 +1,9 @@
+services:
+  web:
+    build: .
+    command: bash -c "/padmd_app"
+    container_name: padmd_app
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
