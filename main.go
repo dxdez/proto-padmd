@@ -29,7 +29,7 @@ func main() {
 }
 
 func runRootHandler(w http.ResponseWriter, r *http.Request) {
-    renderTemplate(w, "home.html", nil)
+    renderTemplate(w, "index.html", nil)
 }
 
 func runAddHandler(w http.ResponseWriter, r *http.Request) {
