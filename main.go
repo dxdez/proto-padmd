@@ -4,10 +4,23 @@ import (
     "fmt"
     "html/template"
     "net/http"
+    "log"
     "path/filepath"
 )
 
 func main() {
+    fmt.Println("Starting DB Connection")
+
+    runOrError := openDB()
+    if runOrError != nil {
+    	log.Panic(runOrError)
+    }
+    defer closeDB()
+    runOrError = setupDB()
+    if runOrError != nil {
+    	log.Panic(runOrError)
+    }
+
     http.HandleFunc("/", runRootHandler)
     http.HandleFunc("/add", runAddHandler)
 
