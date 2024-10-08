@@ -7,7 +7,42 @@
     <title>{{template "title" .}}</title>
 </head>
 <body class="font-sans">
-    {{template "content" .}}
+    <div class="grid grid-rows-[auto,auto,1fr] h-screen gap-4 p-4">
+      <div class="col-span-full">
+        <h1 class="text-3xl font-bold">{{template "page-title" .}}</h1>
+      </div>
+      <div class="col-span-full">
+        <nav>
+          <ul class="flex space-x-4">
+            <li><a href="/" class="text-blue-600 hover:text-blue-800">Home</a></li>
+            <li><a href="/add" class="text-blue-600 hover:text-blue-800">Add</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="grid grid-cols-5 grid-rows-3 gap-4">
+        <div class="col-span-3 row-span-3 bg-gray-200 p-4">
+          <p>Sample text for the first column (3/5 width)</p>
+        </div>
+        <div class="col-span-1 row-span-1 bg-gray-300 p-4">
+          <p>Sample text 1</p>
+        </div>
+        <div class="col-span-1 row-span-1 bg-gray-300 p-4">
+          <p>Sample text 2</p>
+        </div>
+        <div class="col-span-1 row-span-1 bg-gray-300 p-4">
+          <p>Sample text 3</p>
+        </div>
+        <div class="col-span-1 row-span-1 bg-gray-400 p-4">
+          <p>Sample text 4</p>
+        </div>
+        <div class="col-span-1 row-span-1 bg-gray-400 p-4">
+          <p>Sample text 5</p>
+        </div>
+        <div class="col-span-1 row-span-1 bg-gray-400 p-4">
+          <p>Sample text 6</p>
+        </div>
+      </div>
+    </div>
 </body>
 </html>
 {{end}}
