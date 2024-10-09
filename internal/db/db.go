@@ -1,4 +1,4 @@
-package main
+package db
 
 import (
 	"database/sql"
@@ -7,7 +7,7 @@ import (
 
 var DB *sql.DB
 
-func openDB() error {
+func OpenDB() error {
 	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	if err != nil {
 		return err
@@ -16,11 +16,11 @@ func openDB() error {
 	return nil
 }
 
-func closeDB() error {
+func CloseDB() error {
 	return DB.Close()
 }
 
-func setupDB() error {
+func SetupDB() error {
 	_, err := DB.Exec(`CREATE TABLE IF NOT EXISTS items (id INTEGER NOT NULL PRIMARY KEY, title TEXT, content TEXT);`)
 	if err != nil {
 		return err
