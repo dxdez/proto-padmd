@@ -6,17 +6,18 @@ import (
     "net/http"
     "log"
     "path/filepath"
+    "github.com/dylanxhernandez/proto-padmd/internal/db"
 )
 
 func main() {
     fmt.Println("Starting DB Connection")
 
-    runOrError := openDB()
+    runOrError := db.OpenDB()
     if runOrError != nil {
     	log.Panic(runOrError)
     }
-    defer closeDB()
-    runOrError = setupDB()
+    defer db.CloseDB()
+    runOrError = db.SetupDB()
     if runOrError != nil {
     	log.Panic(runOrError)
     }
@@ -37,7 +38,7 @@ func runAddHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
-    templatesDir := "templates"
+    templatesDir := "internal/templates"
     files := []string{
         filepath.Join(templatesDir, tmpl),
         filepath.Join(templatesDir, "layout.html"),
