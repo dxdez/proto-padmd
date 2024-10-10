@@ -38,7 +38,7 @@ func runAddHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {
-    templatesDir := "internal/templates"
+    templatesDir := "web/templates"
     files := []string{
         filepath.Join(templatesDir, tmpl),
         filepath.Join(templatesDir, "layout.html"),
