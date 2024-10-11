@@ -1,4 +1,4 @@
-package document
+package models
 
 import (
     "github.com/dylanxhernandez/proto-padmd/internal/db"
