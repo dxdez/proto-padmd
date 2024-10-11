@@ -1,7 +1,6 @@
 package models
 
 import (
-    "database/sql"
     "github.com/dylanxhernandez/proto-padmd/internal/db"
 )
 
@@ -14,7 +13,7 @@ type Document struct {
 func GetAllDocuments() ([]Document, error) {
     var documentList []Document
 
-    documentRows, err := DB.Query("SELECT id, title, content FROM documents")
+    documentRows, err := db.DB.Query("SELECT id, title, content FROM documents")
     if err != nil {
         return nil, err
     }
@@ -32,9 +31,9 @@ func GetAllDocuments() ([]Document, error) {
     return documentList, nil
 }
 
-func InsertDocument() (title string) (Document, error) {
+func InsertDocument(title string) (Document, error) {
     var id int
-    err = DB.QueryRow("INSERT INTO documents (title, content) VALUES (?, 'This is sample content') RETURNING id", title).Scan(&id)
+    err := db.DB.QueryRow("INSERT INTO documents (title, content) VALUES (?, 'This is sample content') RETURNING id", title).Scan(&id)
     if err != nil {
         return Document{}, err
     }
