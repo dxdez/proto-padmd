@@ -4,9 +4,12 @@ import (
     "fmt"
     "html/template"
     "net/http"
+    "math/rand"
+    "time"
     "log"
     "path/filepath"
     "github.com/dylanxhernandez/proto-padmd/internal/db"
+    "github.com/dylanxhernandez/proto-padmd/internal/models"
 )
 
 func main() {
@@ -34,7 +37,22 @@ func runRootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func runAddHandler(w http.ResponseWriter, r *http.Request) {
-    renderTemplate(w, "add.html", nil)
+    if r.Method == http.MethodPost {
+        rand.Seed(time.Now().UnixNano())
+        randomNumber := rand.Intn(100)
+        randomNumberString := fmt.Sprintf("POST Title %d", randomNumber)
+        fmt.Println(randomNumberString)
+
+        _, error := models.InsertDocument(randomNumberString)
+        if error != nil {
+            log.Printf("ERROR: %v", error)
+        }
+
+        http.Redirect(w, r, "/add", http.StatusSeeOther)
+        return
+    } else {
+        renderTemplate(w, "add.html", nil)
+    }
 }
 
 func renderTemplate(w http.ResponseWriter, tmpl string, data interface{}) {

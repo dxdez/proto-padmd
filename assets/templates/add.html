@@ -4,6 +4,10 @@
 {{end}}
 {{define "page-content"}}
     <div class="bg-gray-200 p-4">
-        Form Goes Here
+	<form hx-post="/add" hx-swap="none">
+		<button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg">
+			Add Item!
+		</button>
+	</form>
     </div>
 {{end}}
