@@ -21,7 +21,7 @@ func CloseDB() error {
 }
 
 func SetupDB() error {
-	_, err := DB.Exec(`CREATE TABLE IF NOT EXISTS items (id INTEGER NOT NULL PRIMARY KEY, title TEXT, content TEXT);`)
+	_, err := DB.Exec(`CREATE TABLE IF NOT EXISTS documents (id INTEGER NOT NULL PRIMARY KEY, title TEXT, content TEXT);`)
 	if err != nil {
 		return err
 	}
