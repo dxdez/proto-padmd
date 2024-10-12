@@ -10,6 +10,10 @@ type Document struct {
     Content string
 }
 
+type DocumentLists struct {
+    Documents []Document
+}
+
 func GetAllDocuments() ([]Document, error) {
     var documentList []Document
 

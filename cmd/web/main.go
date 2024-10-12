@@ -33,7 +33,15 @@ func main() {
 }
 
 func runRootHandler(w http.ResponseWriter, r *http.Request) {
-    renderTemplate(w, "index.html", nil)
+    documents, error := models.GetAllDocuments() 
+    if error != nil {
+        log.Printf("ERROR: %v", error)
+        return
+    }
+    data := models.DocumentLists {
+        Documents: documents,
+    }
+    renderTemplate(w, "index.html", data)
 }
 
 func runAddHandler(w http.ResponseWriter, r *http.Request) {
