@@ -46,6 +46,12 @@ func runRootHandler(w http.ResponseWriter, r *http.Request) {
 
 func runAddHandler(w http.ResponseWriter, r *http.Request) {
     if r.Method == http.MethodPost {
+	title := r.FormValue("title")
+	if title == "" {
+            return
+	} else {
+            fmt.Println(fmt.Sprintf("The title is: %s", title))
+        }
         rand.Seed(time.Now().UnixNano())
         randomNumber := rand.Intn(100)
         randomNumberString := fmt.Sprintf("POST Title %d", randomNumber)
