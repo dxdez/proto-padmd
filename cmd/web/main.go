@@ -4,8 +4,6 @@ import (
     "fmt"
     "html/template"
     "net/http"
-    "math/rand"
-    "time"
     "log"
     "path/filepath"
     "github.com/dylanxhernandez/proto-padmd/internal/db"
@@ -49,15 +47,9 @@ func runAddHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	if title == "" {
             return
-	} else {
-            fmt.Println(fmt.Sprintf("The title is: %s", title))
-        }
-        rand.Seed(time.Now().UnixNano())
-        randomNumber := rand.Intn(100)
-        randomNumberString := fmt.Sprintf("POST Title %d", randomNumber)
-        fmt.Println(randomNumberString)
+	}
 
-        _, error := models.InsertDocument(randomNumberString)
+        _, error := models.InsertDocument(title)
         if error != nil {
             log.Printf("ERROR: %v", error)
         }
