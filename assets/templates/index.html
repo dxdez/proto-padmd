@@ -3,17 +3,22 @@
     HOME
 {{end}}
 {{define "page-content"}}
-    {{ range .Documents }}
-        <div class="bg-gray-200 p-4 flex justify-between items-center">
-            <span>
-                {{ .ID }}<br/>
-                {{ .Title }}<br />
-                {{ .Content }}
-            </span>
-            <div>
-                <button class="text-blue-600">Edit</button>
-                <button class="text-red-600">Delete</button>
-	    </div>
-        </div>
-    {{ end }}
+    <br/> 
+    <div class="overflow-auto">
+        <table>
+    	<tbody>
+    	{{ range .Documents }}
+    	    <tr>
+    		<td>{{ .ID }}</td>
+    		<td>{{ .Title }}</td>
+    		<td>{{ .Content }}</td>
+    		<td>
+                    <button class="outline">Edit</button>
+                    <button class="outline secondary">Delete</button>
+                </td>
+    	    </tr>
+    	{{ end }}
+    	</tbody>
+        </table>
+    </div>
 {{end}}

@@ -3,13 +3,16 @@
     ADD
 {{end}}
 {{define "page-content"}}
-    <div class="bg-gray-200 p-4" id="form-container">
-        <form hx-post="/add" hx-swap="outerHTML" hx-target="#form-container">
-            <input id="title" name="title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mt-5" />
-            <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg">
-                Add Item!
-            </button>
-        </form>
+    <div class="grid">
+        <div id="form-container">
+            <br/>
+            <form hx-post="/add" hx-swap="outerHTML" hx-target="#form-container">
+                <fieldset role="group">
+                    <input name="title" id="title" placeholder="Enter the title of a new post" />
+                    <input type="submit" value="Add Item" />
+                </fieldset>
+            </form>    
+        </div>
     </div>
 {{end}}
 
