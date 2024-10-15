@@ -3,26 +3,22 @@
 <html>
 <head>
     <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <title>{{template "title" .}}</title>
 </head>
-<body class="font-sans">
-    <div class="grid grid-rows-[auto,auto,1fr] h-screen gap-4 p-8">
-      <div class="col-span-full">
-        <h1 class="text-3xl font-bold">{{template "page-title" .}}</h1>
-      </div>
-      <div class="col-span-full">
-        <nav>
-          <ul class="flex space-x-4">
-            <li><a href="/" class="text-blue-600 hover:text-blue-800">Home</a></li>
-            <li><a href="/add" class="text-blue-600 hover:text-blue-800">Add</a></li>
-          </ul>
-        </nav>
-      </div>
-      <div class="col-span-full">
-          {{template "page-content" .}}
-      </div>
-    </div>
-</body>
+    <body>
+        <main class="container">
+            <nav>
+                <ul>
+                    <li><strong>{{template "page-title" .}}</strong></li>
+                </ul>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/add">Add</a></li>
+                </ul>
+            </nav>
+            {{template "page-content" .}}
+        </main>
+    </body>
 </html>
 {{end}}
