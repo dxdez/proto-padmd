@@ -6,17 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/beercss@3.7.10/dist/cdn/beer.min.css" rel="stylesheet">
-    <script type="module" src="https://cdn.jsdelivr.net/npm/beercss@3.7.10/dist/cdn/beer.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <title>{{template "title" .}}</title>
-    <link rel="stylesheet" href="/static/main.css">
 </head>
     <body>
-        <main class="responsive">
+        <main class="container">
             <nav>
-                <div class="max"><strong>PadMd - {{template "page-title" .}}</strong></div>
-                <a class="button" href="/">Home</a>
-                <a class="button" href="/add">Add</a>
+                <ul>
+                    <li><strong>PadMd - {{template "page-title" .}}</strong></li>
+                </ul>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/add" class="secondary">Add New</a></li>
+                </ul>
             </nav>
             {{template "page-content" .}}
         </main>
