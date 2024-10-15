@@ -44,17 +44,24 @@ func runRootHandler(w http.ResponseWriter, r *http.Request) {
 
 func runAddHandler(w http.ResponseWriter, r *http.Request) {
     if r.Method == http.MethodPost {
-	title := r.FormValue("title")
-	if title == "" {
+        title := r.FormValue("title")
+        if title == "" {
             return
-	}
-
-        _, error := models.InsertDocument(title)
-        if error != nil {
-            log.Printf("ERROR: %v", error)
         }
-
-        http.Redirect(w, r, "/add", http.StatusSeeOther)
+        _, err := models.InsertDocument(title)
+        if err != nil {
+            log.Printf("ERROR: %v", err)
+        }
+        // Render the form-reset template
+        tmpl, err := template.ParseFiles("assets/templates/add.html")
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        err = tmpl.ExecuteTemplate(w, "page-content", nil)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+        }
         return
     } else {
         renderTemplate(w, "add.html", nil)
