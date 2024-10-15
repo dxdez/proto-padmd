@@ -8,7 +8,7 @@ import (
     "github.com/dylanxhernandez/proto-padmd/internal/models"
 )
 
-func RunRootHandler(w http.ResponseWriter, r *http.Request) {
+func runRootHandler(w http.ResponseWriter, r *http.Request) {
     documents, error := models.GetAllDocuments() 
     if error != nil {
         log.Printf("ERROR: %v", error)
@@ -20,7 +20,7 @@ func RunRootHandler(w http.ResponseWriter, r *http.Request) {
     renderTemplate(w, "index.html", data)
 }
 
-func RunAddHandler(w http.ResponseWriter, r *http.Request) {
+func runAddHandler(w http.ResponseWriter, r *http.Request) {
     if r.Method == http.MethodPost {
         title := r.FormValue("title")
         if title == "" {
@@ -30,7 +30,6 @@ func RunAddHandler(w http.ResponseWriter, r *http.Request) {
         if err != nil {
             log.Printf("ERROR: %v", err)
         }
-        // Render the form-reset template
         tmpl, err := template.ParseFiles("assets/templates/add.html")
         if err != nil {
             http.Error(w, err.Error(), http.StatusInternalServerError)
