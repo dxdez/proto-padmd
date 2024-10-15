@@ -4,8 +4,8 @@
 {{end}}
 {{define "page-content"}}
     <br/> 
-    <div class="overflow-auto">
-        <table>
+    <div>
+        <table class="medium-space">
     	<tbody>
     	{{ range .Documents }}
     	    <tr>
@@ -13,8 +13,10 @@
     		<td>{{ .Title }}</td>
     		<td>{{ .Content }}</td>
     		<td>
-                    <button class="outline">Edit</button>
-                    <button class="outline secondary">Delete</button>
+                    <a href="#">Edit</a>
+                </td>
+    		<td>
+                    <a href="#">Delete</a>
                 </td>
     	    </tr>
     	{{ end }}
