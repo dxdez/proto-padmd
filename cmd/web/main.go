@@ -23,6 +23,8 @@ func main() {
     	log.Panic(runOrError)
     }
 
+    fs := http.FileServer(http.Dir("./assets/static"))
+    http.Handle("/static/", http.StripPrefix("/static/", fs))
     http.HandleFunc("/", runRootHandler)
     http.HandleFunc("/add", runAddHandler)
 

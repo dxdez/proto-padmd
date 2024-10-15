@@ -3,14 +3,19 @@
     ADD
 {{end}}
 {{define "page-content"}}
-    <div class="grid">
+    <div>
         <div id="form-container">
             <br/>
             <form hx-post="/add" hx-swap="outerHTML" hx-target="#form-container">
-                <fieldset role="group">
-                    <input name="title" id="title" placeholder="Enter the title of a new post" />
-                    <input type="submit" value="Add Item" />
+                <fieldset>
+                <legend>Fill all fields</legend>
+                    <div class="field border label">
+                        <input name="title" id="title">
+                        <label>Title</label>
+                    </div>
                 </fieldset>
+                <br/>
+                <input class="button" type="submit" value="Add Item" />
             </form>    
         </div>
     </div>
