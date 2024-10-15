@@ -5,7 +5,7 @@
 {{define "page-content"}}
     <br/> 
     <div>
-        <table class="medium-space">
+        <table class="striped">
     	<tbody>
     	{{ range .Documents }}
     	    <tr>
@@ -13,10 +13,10 @@
     		<td>{{ .Title }}</td>
     		<td>{{ .Content }}</td>
     		<td>
-                    <a href="#">Edit</a>
+                    <a href="#" class="contrast">Edit</a>
                 </td>
     		<td>
-                    <a href="#">Delete</a>
+                    <a href="#" class="contrast">Delete</a>
                 </td>
     	    </tr>
     	{{ end }}
