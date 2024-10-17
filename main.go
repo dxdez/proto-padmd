@@ -12,6 +12,12 @@ import (
 
 var DB *sql.DB
 
+type Document struct {
+    ID int
+    Title string
+    Content string
+}
+
 func main() {
     fmt.Println("STARTING DB CONNECTION")
     db, err := sql.Open("sqlite", "./sqlite3.db") 
@@ -26,8 +32,7 @@ func main() {
     }
 
     fmt.Println("SETTING UP STATIC ASSETS")
-    fs := http.FileServer(http.Dir("./static"))
-    http.Handle("/static/", http.StripPrefix("/static/", fs))
+    http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
     
     fmt.Println("SETTING UP ROUTES")
     http.HandleFunc("/", runRootHandler)
@@ -44,11 +49,8 @@ func runRootHandler(w http.ResponseWriter, r *http.Request) {
          log.Printf("ERROR: %v", error)
          return
      }
-     data := DocumentLists {
-         Documents: documents,
-     }
      tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/content.html"))
-     err := tmpl.ExecuteTemplate(w, "base", data)
+     err := tmpl.ExecuteTemplate(w, "base", map[string]any{"Documents": documents})
      if err != nil {
          http.Error(w, err.Error(), http.StatusInternalServerError)
      }
@@ -90,16 +92,6 @@ func runAddHandler(w http.ResponseWriter, r *http.Request) {
     }
 }
 
-type Document struct {
-    ID int
-    Title string
-    Content string
-}
-
-type DocumentLists struct {
-    Documents []Document
-}
-
 func getAllDocuments() ([]Document, error) {
     var documentList []Document
 
@@ -130,3 +122,4 @@ func insertDocument(title string) (Document, error) {
     document := Document{ID: id, Title: title, Content: "This is sample content"}
     return document, nil
 }
+
