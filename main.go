@@ -36,13 +36,22 @@ func main() {
     
     fmt.Println("SETTING UP ROUTES")
     http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
-        documents, error := getAllDocuments() 
-        if error != nil {
-            log.Printf("ERROR: %v", error)
-            return
+        var documents []Document
+        documentRows, err := DB.Query("SELECT id, title, content FROM documents")
+        if err != nil {
+            log.Panic(err)
+        }
+        defer documentRows.Close()
+        for documentRows.Next() {
+            currentDocument := Document{}
+            err = documentRows.Scan(&currentDocument.ID, &currentDocument.Title, &currentDocument.Content)
+            if err != nil {
+               log.Panic(err)
+            }
+            documents = append(documents, currentDocument)
         }
         tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/content.html"))
-        err := tmpl.ExecuteTemplate(w, "base", map[string]any{"Documents": documents})
+        err = tmpl.ExecuteTemplate(w, "base", map[string]any{"Documents": documents})
         if err != nil {
             http.Error(w, err.Error(), http.StatusInternalServerError)
         }
@@ -53,7 +62,7 @@ func main() {
             if title == "" {
                 return
             }
-            _, err := insertDocument(title)
+            _, err := DB.Exec("INSERT INTO documents (title, content) VALUES (?, 'This is sample content')", title)
             if err != nil {
                 log.Printf("ERROR: %v", err)
             }
@@ -77,7 +86,6 @@ func main() {
             http.NotFound(w, r)
             return
         }
-        
         id := matches[1]     
         _, err := DB.Exec("DELETE FROM documents WHERE id = (?)", id)
         if err != nil {
@@ -88,36 +96,5 @@ func main() {
     
     fmt.Println("SERVER STARTING ON PORT 8080")
     http.ListenAndServe(":8080", nil)
-}
-
-func getAllDocuments() ([]Document, error) {
-    var documentList []Document
-
-    documentRows, err := DB.Query("SELECT id, title, content FROM documents")
-    if err != nil {
-        return nil, err
-    }
-    defer documentRows.Close()
-
-    for documentRows.Next() {
-        currentDocument := Document{}
-        err := documentRows.Scan(&currentDocument.ID, &currentDocument.Title, &currentDocument.Content)
-        if err != nil {
-            return []Document{}, err
-        }
-        documentList = append(documentList, currentDocument)
-    }
-
-    return documentList, nil
-}
-
-func insertDocument(title string) (Document, error) {
-    var id int
-    err := DB.QueryRow("INSERT INTO documents (title, content) VALUES (?, 'This is sample content') RETURNING id", title).Scan(&id)
-    if err != nil {
-        return Document{}, err
-    }
-    document := Document{ID: id, Title: title, Content: "This is sample content"}
-    return document, nil
 }
 
