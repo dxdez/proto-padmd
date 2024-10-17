@@ -1,4 +1,4 @@
-{{define "layout"}}
+{{define "base"}}
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,21 +7,26 @@
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    <title>{{template "title" .}}</title>
+    <title>Test</title>
 </head>
     <body>
-        <main class="container">
-            <nav>
-                <ul>
-                    <li><strong>PadMd - {{template "page-title" .}}</strong></li>
-                </ul>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/add" class="secondary">Add New</a></li>
-                </ul>
-            </nav>
-            {{template "page-content" .}}
-        </main>
+    <main class="container">
+        <nav>
+            <ul>
+                <li><strong>Test</strong></li>
+            </ul>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/add">Add New</a></li>
+            </ul>
+        </nav>
+        <div id="content">
+            <br/> 
+            {{ block "content" . }}
+            {{end}}
+        </div>
+    </main>
     </body>
 </html>
 {{end}}
+
