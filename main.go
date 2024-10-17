@@ -4,6 +4,7 @@ import (
         "html/template"
         "fmt"
         "net/http"
+        "regexp"
         "log"
         "database/sql"
         _ "modernc.org/sqlite"
@@ -31,6 +32,7 @@ func main() {
     fmt.Println("SETTING UP ROUTES")
     http.HandleFunc("/", runRootHandler)
     http.HandleFunc("/add", runAddHandler)
+    http.HandleFunc("/del/", runDeleteHandler)
     
     fmt.Println("SERVER STARTING ON PORT 8080")
     http.ListenAndServe(":8080", nil)
@@ -50,6 +52,18 @@ func runRootHandler(w http.ResponseWriter, r *http.Request) {
      if err != nil {
          http.Error(w, err.Error(), http.StatusInternalServerError)
      }
+}
+
+func runDeleteHandler(w http.ResponseWriter, r *http.Request) {
+    idDelRegex := regexp.MustCompile(`^/del/([0-9]+)$`)
+    matches := idDelRegex.FindStringSubmatch(r.URL.Path)
+    if len(matches) != 2 {
+        http.NotFound(w, r)
+        return
+    }
+    
+    id := matches[1] // Extracted ID
+    fmt.Fprintf(w, "Delete item with ID: %s", id)
 }
 
 func runAddHandler(w http.ResponseWriter, r *http.Request) {
