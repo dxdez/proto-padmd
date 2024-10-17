@@ -6,14 +6,14 @@ import (
         "net/http"
         "log"
         "database/sql"
-        _ "github.com/mattn/go-sqlite3"
+        _ "modernc.org/sqlite"
        )
 
 var DB *sql.DB
 
 func main() {
     fmt.Println("STARTING DB CONNECTION")
-    db, err := sql.Open("sqlite3", "./sqlite3.db")
+    db, err := sql.Open("sqlite", "./sqlite3.db") 
     if err != nil {
         log.Panic(err)
     }
