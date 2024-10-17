@@ -1,11 +1,6 @@
-{{define "title"}}Add{{end}}
-{{define "page-title"}}
-    ADD
-{{end}}
-{{define "page-content"}}
+{{ define "content" }}
     <div>
         <div id="form-container">
-            <br/>
             <form hx-post="/add" hx-swap="outerHTML" hx-target="#form-container">
                 <fieldset role="group">
                     <input name="title" id="title">
@@ -14,5 +9,5 @@
             </form>    
         </div>
     </div>
-{{end}}
+{{ end }}
 
