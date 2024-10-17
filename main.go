@@ -35,74 +35,59 @@ func main() {
     http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
     
     fmt.Println("SETTING UP ROUTES")
-    http.HandleFunc("/", runRootHandler)
-    http.HandleFunc("/add", runAddHandler)
-    http.HandleFunc("/del/", runDeleteHandler)
-    
-    fmt.Println("SERVER STARTING ON PORT 8080")
-    http.ListenAndServe(":8080", nil)
-}
-
-func runRootHandler(w http.ResponseWriter, r *http.Request) {
-     documents, error := getAllDocuments() 
-     if error != nil {
-         log.Printf("ERROR: %v", error)
-         return
-     }
-     tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/content.html"))
-     err := tmpl.ExecuteTemplate(w, "base", map[string]any{"Documents": documents})
-     if err != nil {
-         http.Error(w, err.Error(), http.StatusInternalServerError)
-     }
-}
-
-func runDeleteHandler(w http.ResponseWriter, r *http.Request) {
-    idDelRegex := regexp.MustCompile(`^/del/([0-9]+)$`)
-    matches := idDelRegex.FindStringSubmatch(r.URL.Path)
-    if len(matches) != 2 {
-        http.NotFound(w, r)
-        return
-    }
-    
-    id := matches[1]     
-    err := deleteDocument(id)
-    if err != nil {
-        log.Printf("ERROR: %v", err)
-    }
-    documents, docerr := getAllDocuments() 
-    if docerr != nil {
-        log.Printf("ERROR: %v", docerr)
-        return
-    }
-    tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/content.html"))
-    err = tmpl.ExecuteTemplate(w, "base", map[string]any{"Documents": documents})
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-    }
-}
-
-func runAddHandler(w http.ResponseWriter, r *http.Request) {
-    if r.Method == http.MethodPost {
-        title := r.FormValue("title")
-        if title == "" {
+    http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
+        documents, error := getAllDocuments() 
+        if error != nil {
+            log.Printf("ERROR: %v", error)
             return
         }
-        _, err := insertDocument(title)
+        tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/content.html"))
+        err := tmpl.ExecuteTemplate(w, "base", map[string]any{"Documents": documents})
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+        }
+    })
+    http.HandleFunc("/add", func (w http.ResponseWriter, r *http.Request) {
+        if r.Method == http.MethodPost {
+            title := r.FormValue("title")
+            if title == "" {
+                return
+            }
+            _, err := insertDocument(title)
+            if err != nil {
+                log.Printf("ERROR: %v", err)
+            }
+            tmpl := template.Must(template.ParseFiles("templates/form_submitted.html"))
+            err = tmpl.ExecuteTemplate(w, "content", nil)
+            if err != nil {
+                http.Error(w, err.Error(), http.StatusInternalServerError)
+            }
+        } else {
+            tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/form.html"))
+            err := tmpl.ExecuteTemplate(w, "base", nil)
+            if err != nil {
+                http.Error(w, err.Error(), http.StatusInternalServerError)
+            }
+        }
+    })
+    http.HandleFunc("/del/", func (w http.ResponseWriter, r *http.Request) {
+        idDelRegex := regexp.MustCompile(`^/del/([0-9]+)$`)
+        matches := idDelRegex.FindStringSubmatch(r.URL.Path)
+        if len(matches) != 2 {
+            http.NotFound(w, r)
+            return
+        }
+        
+        id := matches[1]     
+        _, err := DB.Exec("DELETE FROM documents WHERE id = (?)", id)
         if err != nil {
             log.Printf("ERROR: %v", err)
         }
-        tmpl := template.Must(template.ParseFiles("templates/form_submitted.html"))
-        err = tmpl.ExecuteTemplate(w, "content", nil)
-        if err != nil {
-            http.Error(w, err.Error(), http.StatusInternalServerError)
-        }
-    } else {
-        tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/form.html"))
-        err := tmpl.ExecuteTemplate(w, "base", nil)
-        if err != nil {
-            http.Error(w, err.Error(), http.StatusInternalServerError)
-        }
-    }
+        http.Redirect(w, r, "/", http.StatusFound)
+    })
+    
+    fmt.Println("SERVER STARTING ON PORT 8080")
+    http.ListenAndServe(":8080", nil)
 }
 
 func getAllDocuments() ([]Document, error) {
@@ -136,10 +121,3 @@ func insertDocument(title string) (Document, error) {
     return document, nil
 }
 
-func deleteDocument(id string) error {
-    _, err := DB.Exec("DELETE FROM documents WHERE id = (?)", id)
-    if err != nil {
-    	return err
-    }
-    return nil
-}
