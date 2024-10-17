@@ -19,7 +19,6 @@ type Document struct {
 }
 
 func main() {
-    fmt.Println("STARTING DB CONNECTION")
     db, err := sql.Open("sqlite", "./sqlite3.db") 
     if err != nil {
         log.Panic(err)
@@ -30,11 +29,7 @@ func main() {
     if err != nil {
         log.Panic(err)
     }
-
-    fmt.Println("SETTING UP STATIC ASSETS")
     http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
-    
-    fmt.Println("SETTING UP ROUTES")
     http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
         var documents []Document
         documentRows, err := DB.Query("SELECT id, title, content FROM documents")
@@ -79,6 +74,26 @@ func main() {
             }
         }
     })
+    http.HandleFunc("/edit/", func (w http.ResponseWriter, r *http.Request) {
+        idEditRegex := regexp.MustCompile(`^/edit/([0-9]+)$`)
+        matches := idEditRegex.FindStringSubmatch(r.URL.Path)
+        if len(matches) != 2 {
+            http.NotFound(w, r)
+            return
+        }
+        id := matches[1]     
+        if r.Method == http.MethodPost {
+            fmt.Fprintf(w, "Edit item with ID: %s", id)
+            http.NotFound(w, r)
+            return
+        } else {
+            tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/form.html"))
+            err := tmpl.ExecuteTemplate(w, "base", map[string]any{"Editing": true, "IdRef": id })
+            if err != nil {
+                http.Error(w, err.Error(), http.StatusInternalServerError)
+            }
+        }
+    })
     http.HandleFunc("/del/", func (w http.ResponseWriter, r *http.Request) {
         idDelRegex := regexp.MustCompile(`^/del/([0-9]+)$`)
         matches := idDelRegex.FindStringSubmatch(r.URL.Path)
@@ -93,7 +108,6 @@ func main() {
         }
         http.Redirect(w, r, "/", http.StatusFound)
     })
-    
     fmt.Println("SERVER STARTING ON PORT 8080")
     http.ListenAndServe(":8080", nil)
 }
