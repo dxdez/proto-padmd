@@ -64,8 +64,21 @@ func runDeleteHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
     
-    id := matches[1] // Extracted ID
-    fmt.Fprintf(w, "Delete item with ID: %s", id)
+    id := matches[1]     
+    err := deleteDocument(id)
+    if err != nil {
+        log.Printf("ERROR: %v", err)
+    }
+    documents, docerr := getAllDocuments() 
+    if docerr != nil {
+        log.Printf("ERROR: %v", docerr)
+        return
+    }
+    tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/content.html"))
+    err = tmpl.ExecuteTemplate(w, "base", map[string]any{"Documents": documents})
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+    }
 }
 
 func runAddHandler(w http.ResponseWriter, r *http.Request) {
@@ -123,3 +136,10 @@ func insertDocument(title string) (Document, error) {
     return document, nil
 }
 
+func deleteDocument(id string) error {
+    _, err := DB.Exec("DELETE FROM documents WHERE id = (?)", id)
+    if err != nil {
+    	return err
+    }
+    return nil
+}
