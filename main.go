@@ -40,6 +40,9 @@ func main() {
             if err != nil {
                log.Panic(err)
             }
+            if len(currentDocument.Content) >= 75 {
+                currentDocument.Content = currentDocument.Content[:75]
+            } 
             documents = append(documents, currentDocument)
         }
         tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/content.html"))
