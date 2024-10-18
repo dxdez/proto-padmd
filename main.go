@@ -83,9 +83,19 @@ func main() {
         }
         id := matches[1]     
         if r.Method == http.MethodPost {
-            fmt.Fprintf(w, "Edit item with ID: %s", id)
-            http.NotFound(w, r)
-            return
+            title := r.FormValue("title")
+            if title == "" {
+                return
+            }
+            _, err := DB.Exec("UPDATE documents SET title = (?) WHERE id = (?)", title, id)
+            if err != nil {
+                log.Printf("ERROR: %v", err)
+            }
+            tmpl := template.Must(template.ParseFiles("templates/form_submitted.html"))
+            err = tmpl.ExecuteTemplate(w, "content", nil)
+            if err != nil {
+                http.Error(w, err.Error(), http.StatusInternalServerError)
+            }
         } else {
             tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/form.html"))
             err := tmpl.ExecuteTemplate(w, "base", map[string]any{"Editing": true, "IdRef": id })
