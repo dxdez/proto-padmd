@@ -4,17 +4,31 @@
             {{ if .Editing }}
                 <h3>Edit Record</h3>
                 <form hx-post="/edit/{{ .IdRef }}" hx-swap="outerHTML" hx-target="#form-container">
-                    <fieldset role="group">
-                        <input name="title" id="title">
-                        <input class="button" type="submit" value="Add Item" />
+                    <fieldset>
+                        <label>
+                            Document Title
+                            <input name="title" id="title" value="{{ .TitleRef }}">
+                        </label>
+                        <label>
+                            Document Content
+                            <textarea name="content" rows="12">{{ .ContentRef }}</textarea>
+                        </label>
                     </fieldset>
+                    <input class="button" type="submit" value="Save Item" />
                 </form>    
             {{ else }}
                 <form hx-post="/add" hx-swap="outerHTML" hx-target="#form-container">
-                    <fieldset role="group">
-                        <input name="title" id="title">
-                        <input class="button" type="submit" value="Add Item" />
+                    <fieldset>
+                        <label>
+                            Document Title
+                            <input name="title" id="title">
+                        </label>
+                        <label>
+                            Document Content
+                            <textarea name="content" rows="12"></textarea>
+                        </label>
                     </fieldset>
+                    <input class="button" type="submit" value="Add Item" />
                 </form>    
             {{ end }}
         </div>

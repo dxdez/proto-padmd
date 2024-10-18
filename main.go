@@ -1,16 +1,14 @@
 package main
 
 import (
-        "html/template"
-        "fmt"
-        "net/http"
-        "regexp"
-        "log"
-        "database/sql"
-        _ "modernc.org/sqlite"
-       )
-
-var DB *sql.DB
+    "html/template"
+    "fmt"
+    "net/http"
+    "regexp"
+    "log"
+    "database/sql"
+    _ "modernc.org/sqlite"
+)
 
 type Document struct {
     ID int
@@ -23,16 +21,15 @@ func main() {
     if err != nil {
         log.Panic(err)
     }
-    DB = db
-    defer DB.Close()
-    _, err = DB.Exec(`CREATE TABLE IF NOT EXISTS documents (id INTEGER NOT NULL PRIMARY KEY, title TEXT, content TEXT);`)
+    defer db.Close()
+    _, err = db.Exec(`CREATE TABLE IF NOT EXISTS documents (id INTEGER NOT NULL PRIMARY KEY, title TEXT, content TEXT);`)
     if err != nil {
         log.Panic(err)
     }
     http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
     http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
         var documents []Document
-        documentRows, err := DB.Query("SELECT id, title, content FROM documents")
+        documentRows, err := db.Query("SELECT id, title, content FROM documents")
         if err != nil {
             log.Panic(err)
         }
@@ -54,10 +51,11 @@ func main() {
     http.HandleFunc("/add", func (w http.ResponseWriter, r *http.Request) {
         if r.Method == http.MethodPost {
             title := r.FormValue("title")
+            content := r.FormValue("content")
             if title == "" {
                 return
             }
-            _, err := DB.Exec("INSERT INTO documents (title, content) VALUES (?, 'This is sample content')", title)
+            _, err := db.Exec("INSERT INTO documents (title, content) VALUES (?, ?)", title, content)
             if err != nil {
                 log.Printf("ERROR: %v", err)
             }
@@ -83,12 +81,28 @@ func main() {
         }
         id := matches[1]     
         if r.Method == http.MethodPost {
-            fmt.Fprintf(w, "Edit item with ID: %s", id)
-            http.NotFound(w, r)
-            return
+            title := r.FormValue("title")
+            content := r.FormValue("content")
+            if title == "" {
+                return
+            }
+            _, err := db.Exec("UPDATE documents SET title = (?), content = (?) WHERE id = (?)", title, content, id)
+            if err != nil {
+                log.Printf("ERROR: %v", err)
+            }
+            tmpl := template.Must(template.ParseFiles("templates/form_submitted.html"))
+            err = tmpl.ExecuteTemplate(w, "content", nil)
+            if err != nil {
+                http.Error(w, err.Error(), http.StatusInternalServerError)
+            }
         } else {
+            var document Document
+            err := db.QueryRow("SELECT id, title, content FROM documents WHERE id = ?", id).Scan(&document.ID, &document.Title, &document.Content)            
+            if err != nil {
+                http.Error(w, err.Error(), http.StatusInternalServerError)
+            }
             tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/form.html"))
-            err := tmpl.ExecuteTemplate(w, "base", map[string]any{"Editing": true, "IdRef": id })
+            err = tmpl.ExecuteTemplate(w, "base", map[string]any{"Editing": true, "IdRef": id, "TitleRef": document.Title, "ContentRef": document.Content })
             if err != nil {
                 http.Error(w, err.Error(), http.StatusInternalServerError)
             }
@@ -102,7 +116,7 @@ func main() {
             return
         }
         id := matches[1]     
-        _, err := DB.Exec("DELETE FROM documents WHERE id = (?)", id)
+        _, err := db.Exec("DELETE FROM documents WHERE id = (?)", id)
         if err != nil {
             log.Printf("ERROR: %v", err)
         }
