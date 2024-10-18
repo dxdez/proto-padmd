@@ -5,7 +5,7 @@
                 <h3>Edit Record</h3>
                 <form hx-post="/edit/{{ .IdRef }}" hx-swap="outerHTML" hx-target="#form-container">
                     <fieldset role="group">
-                        <input name="title" id="title">
+                        <input name="title" id="title" value="{{ .TitleRef }}">
                         <input class="button" type="submit" value="Add Item" />
                     </fieldset>
                 </form>    
