@@ -1,14 +1,14 @@
 package main
 
 import (
-        "html/template"
-        "fmt"
-        "net/http"
-        "regexp"
-        "log"
-        "database/sql"
-        _ "modernc.org/sqlite"
-       )
+    "html/template"
+    "fmt"
+    "net/http"
+    "regexp"
+    "log"
+    "database/sql"
+    _ "modernc.org/sqlite"
+)
 
 type Document struct {
     ID int
@@ -51,10 +51,11 @@ func main() {
     http.HandleFunc("/add", func (w http.ResponseWriter, r *http.Request) {
         if r.Method == http.MethodPost {
             title := r.FormValue("title")
+            content := r.FormValue("content")
             if title == "" {
                 return
             }
-            _, err := db.Exec("INSERT INTO documents (title, content) VALUES (?, 'This is sample content')", title)
+            _, err := db.Exec("INSERT INTO documents (title, content) VALUES (?, ?)", title, content)
             if err != nil {
                 log.Printf("ERROR: %v", err)
             }
@@ -81,10 +82,11 @@ func main() {
         id := matches[1]     
         if r.Method == http.MethodPost {
             title := r.FormValue("title")
+            content := r.FormValue("content")
             if title == "" {
                 return
             }
-            _, err := db.Exec("UPDATE documents SET title = (?) WHERE id = (?)", title, id)
+            _, err := db.Exec("UPDATE documents SET title = (?), content = (?) WHERE id = (?)", title, content, id)
             if err != nil {
                 log.Printf("ERROR: %v", err)
             }
@@ -100,7 +102,7 @@ func main() {
                 http.Error(w, err.Error(), http.StatusInternalServerError)
             }
             tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/form.html"))
-            err = tmpl.ExecuteTemplate(w, "base", map[string]any{"Editing": true, "IdRef": id, "TitleRef": document.Title })
+            err = tmpl.ExecuteTemplate(w, "base", map[string]any{"Editing": true, "IdRef": id, "TitleRef": document.Title, "ContentRef": document.Content })
             if err != nil {
                 http.Error(w, err.Error(), http.StatusInternalServerError)
             }
