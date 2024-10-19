@@ -1,7 +1,12 @@
 {{ define "content" }}
     <div>
         <div id="form-container">
-            Form Submitted!
+            <h1>Form Submitted!</h1>
+            <br/>
+            <div role="group">
+                <button hx-get="/" hx-target="body" hx-swap="innerHTML">Return Home</button>
+                <button hx-get="/edit/{{ .IdRef }}" hx-target="body" hx-swap="innerHTML">Re-open Form</button>
+            </div>
         </div>
     </div>
 {{ end }}
