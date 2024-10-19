@@ -94,7 +94,7 @@ func main() {
                 log.Printf("ERROR: %v", err)
             }
             tmpl := template.Must(template.ParseFiles("templates/form_submitted.html"))
-            err = tmpl.ExecuteTemplate(w, "content", nil)
+            err = tmpl.ExecuteTemplate(w, "content", map[string]any{"IdRef": id})
             if err != nil {
                 http.Error(w, err.Error(), http.StatusInternalServerError)
             }
