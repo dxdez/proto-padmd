@@ -1,17 +1,23 @@
 {{ define "content" }}
     <div>
         <table class="striped">
+        <thead>
+            <tr>
+                <th scope="col">Title</td> 
+                <th scope="col">Content</td> 
+                <th scope="col">Options</td> 
+            </tr>
+        </thead>
     	<tbody>
     	{{ range .Documents }}
     	    <tr>
-    		<td>{{ .ID }}</td>
     		<td>{{ .Title }}</td>
     		<td>{{ .Content }}</td>
     		<td>
-                    <a href="/edit/{{ .ID }}" class="contrast">Edit</a>
-                </td>
-    		<td>
-                    <a href="/del/{{ .ID }}" class="contrast">Delete</a>
+                    <div role="group">
+                    <button hx-get="/edit/{{ .ID }}" hx-target="body" hx-swap="innerHTML">Edit</button>
+                    <button hx-get="/del/{{ .ID }}" hx-target="body" hx-swap="innerHTML">Delete</button>
+                    </div>
                 </td>
     	    </tr>
     	{{ end }}
