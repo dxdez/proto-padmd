@@ -58,12 +58,16 @@ func main() {
             if title == "" {
                 return
             }
-            _, err := db.Exec("INSERT INTO documents (title, content) VALUES (?, ?)", title, content)
+            result, err := db.Exec("INSERT INTO documents (title, content) VALUES (?, ?)", title, content)
+            if err != nil {
+                log.Printf("ERROR: %v", err)
+            }
+            id, err := result.LastInsertId()
             if err != nil {
                 log.Printf("ERROR: %v", err)
             }
             tmpl := template.Must(template.ParseFiles("templates/form_submitted.html"))
-            err = tmpl.ExecuteTemplate(w, "content", nil)
+            err = tmpl.ExecuteTemplate(w, "content", map[string]any{"IdRef": id})
             if err != nil {
                 http.Error(w, err.Error(), http.StatusInternalServerError)
             }
