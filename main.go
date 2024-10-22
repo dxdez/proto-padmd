@@ -41,8 +41,8 @@ func main() {
             if err != nil {
                log.Panic(err)
             }
-            if len(currentDocument.Content) >= 75 {
-                currentDocument.Content = currentDocument.Content[:75]
+            if len(currentDocument.Content) >= 100 {
+                currentDocument.Content = currentDocument.Content[:100]
             } 
             documents = append(documents, currentDocument)
         }
@@ -52,7 +52,7 @@ func main() {
             http.Error(w, err.Error(), http.StatusInternalServerError)
         }
     })
-    http.HandleFunc("/view", func (w http.ResponseWriter, r *http.Request) {
+    http.HandleFunc("/view/", func (w http.ResponseWriter, r *http.Request) {
         idEditRegex := regexp.MustCompile(`^/view/([0-9]+)$`)
         matches := idEditRegex.FindStringSubmatch(r.URL.Path)
         if len(matches) != 2 {
@@ -65,7 +65,7 @@ func main() {
         if err != nil {
             http.Error(w, err.Error(), http.StatusInternalServerError)
         }
-        htmlContent := markdown.ToHTML([]byte(markdownContent), nil, nil)
+        htmlContent := markdown.ToHTML([]byte(document.Content), nil, nil)
         tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/content_markdown.html"))
         if err := tmpl.ExecuteTemplate(w, "base", htmlContent); err != nil {
             http.Error(w, err.Error(), http.StatusInternalServerError)
