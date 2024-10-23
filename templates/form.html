@@ -3,7 +3,7 @@
         <div id="form-container">
             {{ if .Editing }}
                 <h3>Edit Record</h3>
-                <form hx-post="/edit/{{ .IdRef }}" hx-swap="outerHTML" hx-target="#form-container">
+                <form method="post">
                     <fieldset>
                         <label>
                             Document Title
@@ -14,10 +14,13 @@
                             <textarea name="content" rows="12">{{ .ContentRef }}</textarea>
                         </label>
                     </fieldset>
-                    <input class="button" type="submit" value="Save Item" />
+                    <div role="group">
+                        <input class="button" type="submit" hx-post="/edit/{{ .IdRef }}" hx-swap="outerHTML" hx-target="#form-container" value="Save" />
+                        <input type="reset">
+                    </div>
                 </form>    
             {{ else }}
-                <form hx-post="/add" hx-swap="outerHTML" hx-target="#form-container">
+                <form method="post">
                     <fieldset>
                         <label>
                             Document Title
@@ -28,7 +31,10 @@
                             <textarea name="content" rows="12"></textarea>
                         </label>
                     </fieldset>
-                    <input class="button" type="submit" value="Add Item" />
+                    <div role="group">
+                        <input class="button" type="submit" hx-post="/add" hx-swap="outerHTML" hx-target="#form-container" value="Add Item" />
+                        <input type="reset">
+                    </div>
                 </form>    
             {{ end }}
         </div>
