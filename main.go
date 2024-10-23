@@ -8,6 +8,8 @@ import (
     "log"
     "database/sql"
     "github.com/gomarkdown/markdown"
+    "github.com/gomarkdown/markdown/html"
+    "github.com/gomarkdown/markdown/parser"
     _ "modernc.org/sqlite"
 )
 
@@ -65,9 +67,21 @@ func main() {
         if err != nil {
             http.Error(w, err.Error(), http.StatusInternalServerError)
         }
-        htmlContent := markdown.ToHTML([]byte(document.Content), nil, nil)
+
+	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
+	p := parser.NewWithExtensions(extensions)
+	returnDoc := p.Parse([]byte(document.Content))
+
+	htmlFlags := html.CommonFlags | html.HrefTargetBlank
+	opts := html.RendererOptions{Flags: htmlFlags}
+	renderer := html.NewRenderer(opts)
+
+        htmlContent := markdown.Render(returnDoc, renderer)
+        htmlContentStr := string(htmlContent)        
+        fmt.Println(htmlContentStr)
         tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/content_markdown.html"))
-        if err := tmpl.ExecuteTemplate(w, "base", htmlContent); err != nil {
+        err = tmpl.ExecuteTemplate(w, "base", template.HTML(htmlContentStr))
+        if err != nil {
             http.Error(w, err.Error(), http.StatusInternalServerError)
         }
     })
