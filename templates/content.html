@@ -15,6 +15,7 @@
     		<td>{{ .Content }}</td>
     		<td>
                     <div role="group">
+                    <button hx-get="/view/{{ .ID }}" hx-target="body" hx-swap="innerHTML">View</button>
                     <button hx-get="/edit/{{ .ID }}" hx-target="body" hx-swap="innerHTML">Edit</button>
                     <button hx-get="/del/{{ .ID }}" hx-target="body" hx-swap="innerHTML">Delete</button>
                     </div>

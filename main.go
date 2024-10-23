@@ -7,6 +7,7 @@ import (
     "regexp"
     "log"
     "database/sql"
+    "github.com/gomarkdown/markdown"
     _ "modernc.org/sqlite"
 )
 
@@ -40,14 +41,33 @@ func main() {
             if err != nil {
                log.Panic(err)
             }
-            if len(currentDocument.Content) >= 75 {
-                currentDocument.Content = currentDocument.Content[:75]
+            if len(currentDocument.Content) >= 100 {
+                currentDocument.Content = currentDocument.Content[:100]
             } 
             documents = append(documents, currentDocument)
         }
         tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/content.html"))
         err = tmpl.ExecuteTemplate(w, "base", map[string]any{"Documents": documents})
         if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+        }
+    })
+    http.HandleFunc("/view/", func (w http.ResponseWriter, r *http.Request) {
+        idEditRegex := regexp.MustCompile(`^/view/([0-9]+)$`)
+        matches := idEditRegex.FindStringSubmatch(r.URL.Path)
+        if len(matches) != 2 {
+            http.NotFound(w, r)
+            return
+        }
+        id := matches[1]     
+        var document Document
+        err := db.QueryRow("SELECT id, title, content FROM documents WHERE id = ?", id).Scan(&document.ID, &document.Title, &document.Content)            
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+        }
+        htmlContent := markdown.ToHTML([]byte(document.Content), nil, nil)
+        tmpl := template.Must(template.ParseFiles("templates/index.html", "templates/content_markdown.html"))
+        if err := tmpl.ExecuteTemplate(w, "base", htmlContent); err != nil {
             http.Error(w, err.Error(), http.StatusInternalServerError)
         }
     })

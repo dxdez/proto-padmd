@@ -2,7 +2,10 @@ module github.com/dylanxhernandez/proto-padmd
 
 go 1.22.7
 
-require modernc.org/sqlite v1.33.1
+require (
+	github.com/gomarkdown/markdown v0.0.0-20240930133441-72d49d9543d8
+	modernc.org/sqlite v1.33.1
+)
 
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
