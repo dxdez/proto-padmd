@@ -1,6 +1,6 @@
 {{ define "content" }}
     <div>
-        <table class="striped">
+        <table data-theme="light">
         <thead>
             <tr>
                 <th scope="col">Title</td> 
@@ -15,9 +15,9 @@
     		<td>{{ .Content }}</td>
     		<td>
                     <div role="group">
-                        <button class="outline" hx-get="/view/{{ .ID }}" hx-target="body" hx-swap="innerHTML">View</button>
-                        <button class="outline" hx-get="/edit/{{ .ID }}" hx-target="body" hx-swap="innerHTML">Edit</button>
-                        <button class="outline" hx-get="/del/{{ .ID }}" hx-target="body" hx-swap="innerHTML">Delete</button>
+                        <button class="outline contrast" hx-get="/view/{{ .ID }}" hx-target="body" hx-swap="innerHTML">View</button>
+                        <button class="outline contrast" hx-get="/edit/{{ .ID }}" hx-target="body" hx-swap="innerHTML">Edit</button>
+                        <button class="outline contrast" hx-get="/del/{{ .ID }}" hx-target="body" hx-swap="innerHTML">Delete</button>
                     </div>
                 </td>
     	    </tr>

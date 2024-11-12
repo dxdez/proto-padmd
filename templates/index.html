@@ -7,18 +7,20 @@
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
     <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    <title>Test</title>
+    <title>PadMd</title>
 </head>
     <body>
     <main class="container">
         <nav>
             <ul>
-                <li><strong>Test</strong></li>
+                <li><strong>PadMd</strong></li>
             </ul>
             <ul>
-                <li><a href="/">Home</a></li>
                 <li>
-                    <button class="outline" hx-get="/add" hx-target="body" hx-swap="innerHTML">Add New</button>
+                    <a href="/" class="contrast">Home</a>
+                </li>
+                <li>
+                    <button class="outline contrast" hx-get="/add" hx-target="body" hx-swap="innerHTML">&#x2b; Add New</button>
                 </li>
             </ul>
         </nav>
