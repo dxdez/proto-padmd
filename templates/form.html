@@ -16,7 +16,6 @@
                     </fieldset>
                     <div role="group">
                         <input class="outline contrast" type="submit" hx-post="/edit/{{ .IdRef }}" hx-swap="outerHTML" hx-target="#form-container" value="Save" />
-                        <input type="reset" class="outline contrast">
                     </div>
                 </form>    
             {{ else }}
@@ -33,7 +32,6 @@
                     </fieldset>
                     <div role="group">
                         <input class="outline contrast" type="submit" hx-post="/add" hx-swap="outerHTML" hx-target="#form-container" value="Add Item" />
-                        <input type="reset" class="outline contrast">
                     </div>
                 </form>    
             {{ end }}
