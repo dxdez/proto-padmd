@@ -14,13 +14,16 @@ type Document struct {
     Content string
 }
 
+var DB *sql.DB
+
 func main() {
     db, err := sql.Open("sqlite", "./sqlite3.db") 
     if err != nil {
         log.Panic(err)
     }
-    defer db.Close()
-    _, err = db.Exec(`CREATE TABLE IF NOT EXISTS documents (id INTEGER NOT NULL PRIMARY KEY, title TEXT, content TEXT);`)
+    DB = db
+    defer DB.Close() 
+    _, err = DB.Exec(`CREATE TABLE IF NOT EXISTS documents (id INTEGER NOT NULL PRIMARY KEY, title TEXT, content TEXT);`)
     if err != nil {
         log.Panic(err)
     }

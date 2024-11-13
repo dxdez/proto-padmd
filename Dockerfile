@@ -10,7 +10,7 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -o /padmd_app ./main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o /padmd_app .
 
 EXPOSE 8080
 

@@ -6,7 +6,6 @@ import (
     "net/http"
     "regexp"
     "log"
-    "database/sql"
     "github.com/gomarkdown/markdown"
     "github.com/gomarkdown/markdown/html"
     "github.com/gomarkdown/markdown/parser"
@@ -14,7 +13,7 @@ import (
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
     var documents []Document
-    documentRows, err := db.Query("SELECT id, title, content FROM documents")
+    documentRows, err := DB.Query("SELECT id, title, content FROM documents")
     if err != nil {
         log.Panic(err)
     }
@@ -46,7 +45,7 @@ func handleView(w http.ResponseWriter, r *http.Request) {
     }
     id := matches[1]     
     var document Document
-    err := db.QueryRow("SELECT id, title, content FROM documents WHERE id = ?", id).Scan(&document.ID, &document.Title, &document.Content)            
+    err := DB.QueryRow("SELECT id, title, content FROM documents WHERE id = ?", id).Scan(&document.ID, &document.Title, &document.Content)            
     if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
     }
@@ -76,7 +75,7 @@ func handleAdd(w http.ResponseWriter, r *http.Request) {
         if title == "" {
     	    return
         }
-        result, err := db.Exec("INSERT INTO documents (title, content) VALUES (?, ?)", title, content)
+        result, err := DB.Exec("INSERT INTO documents (title, content) VALUES (?, ?)", title, content)
         if err != nil {
     	    log.Printf("ERROR: %v", err)
         }
@@ -112,7 +111,7 @@ func handleEdit(w http.ResponseWriter, r *http.Request) {
         if title == "" {
     	    return
         }
-        _, err := db.Exec("UPDATE documents SET title = (?), content = (?) WHERE id = (?)", title, content, id)
+        _, err := DB.Exec("UPDATE documents SET title = (?), content = (?) WHERE id = (?)", title, content, id)
         if err != nil {
     	    log.Printf("ERROR: %v", err)
         }
@@ -123,7 +122,7 @@ func handleEdit(w http.ResponseWriter, r *http.Request) {
         }
     } else {
         var document Document
-        err := db.QueryRow("SELECT id, title, content FROM documents WHERE id = ?", id).Scan(&document.ID, &document.Title, &document.Content)            
+        err := DB.QueryRow("SELECT id, title, content FROM documents WHERE id = ?", id).Scan(&document.ID, &document.Title, &document.Content)            
         if err != nil {
     	    http.Error(w, err.Error(), http.StatusInternalServerError)
         }
@@ -143,7 +142,7 @@ func handleDelete(w http.ResponseWriter, r *http.Request) {
         return
     }
     id := matches[1]     
-    _, err := db.Exec("DELETE FROM documents WHERE id = (?)", id)
+    _, err := DB.Exec("DELETE FROM documents WHERE id = (?)", id)
     if err != nil {
         log.Printf("ERROR: %v", err)
     }
