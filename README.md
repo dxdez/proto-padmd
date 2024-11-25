@@ -13,4 +13,4 @@ This project is a web-based markdown editor built with Go and HTMX, offering a s
 - **Web-based Interface**: Accessible through any modern web browser, no installation required.
 - **Responsive Design**: Adapts to various screen sizes for a consistent user experience across devices.
 
-This application serves as an efficient tool for content creators, developers, and anyone who needs a straightforward yet powerful markdown editing solution. Whether you're drafting documentation, writing blog posts, or preparing content for web publication, this editor streamlines the process from writing to final output.
+This application serves as an efficient tool for content creators, developers, and anyone who needs a straightforward yet powerful markdown editing solution.
